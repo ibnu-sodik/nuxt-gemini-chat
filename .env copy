@@ -2,5 +2,5 @@ LOGTO_ENDPOINT=https://57t30l.logto.app/
 LOGTO_APP_ID=9pskdd4j4b2d1vku9plry
 LOGTO_APP_SECRET=sEA60f6FkZFHc3zdfqQCpUWvAzNhM7US
 LOGTO_COOKIE_ENCRYPTION_KEY=rUrJO3uwO0koDNW0V0LBpuH1ejDMtSN0
-LOGTO_REDIRECT_URI=http://localhost:3000/auth/callback
+LOGTO_REDIRECT_URI=http://localhost:3000/callback
 DATABASE_URL=postgresql://neondb_owner:npg_wP7e8bWvfVNd@ep-wandering-snow-a140aao7-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require

@@ -1,81 +1,49 @@
-<template>
-  <client-only>
-    <div class="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 class="text-2xl font-bold text-center mb-6 text-gray-800">Login</h1>
-        <form @submit.prevent="handleLogin" class="space-y-4">
-          <div>
-            <label for="email" class="block text-sm font-medium text-gray-700"
-              >Email</label
-            >
-            <input
-              id="email"
-              v-model="email"
-              type="email"
-              required
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          <div>
-            <label
-              for="password"
-              class="block text-sm font-medium text-gray-700"
-              >Password</label
-            >
-            <input
-              id="password"
-              v-model="password"
-              type="password"
-              required
-              class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            />
-          </div>
-          <button
-            type="submit"
-            class="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition duration-200"
-          >
-            Login
-          </button>
-        </form>
-      </div>
-    </div>
-  </client-only>
-</template>
-
 <script setup lang="ts">
-import { ref } from "vue";
-import { navigateTo } from "#app";
+import { useLogtoUser, useLogto } from "#imports";
+import { useRouter } from "#imports";
 
-const { $logto } = useNuxtApp();
+const user = useLogtoUser();
+const logto = useLogto();
+const router = useRouter();
 
-const logto = $logto as any;
+const handleSignIn = async () => {
+  console.log("Signing in...");
+  await logto.signInRedirect();
+};
 
-const email = ref("");
-const password = ref("");
-
-const handleLogin = async () => {
-  try {
-    // Validate with Logto using ROPC
-    await logto.signIn(email.value, password.value);
-
-    // Check if authenticated
-    if (logto.isAuthenticated) {
-      const userInfo = await logto.getIdTokenClaims();
-
-      // Save user data to database
-      await $fetch("/api/user/save", {
-        method: "POST",
-        body: {
-          email: userInfo?.email,
-          logtoId: userInfo?.sub,
-        },
-      });
-
-      // Redirect to chat page
-      await navigateTo("/chat");
-    }
-  } catch (error) {
-    console.error("Login error:", error);
-  }
+const handleSignOut = async () => {
+  await logto.signOut();
 };
 </script>
+
+<template>
+  <div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md text-center">
+      <div v-if="user">
+        <h2 class="text-2xl font-semibold mb-4">
+          Welcome, {{ user.name || user.email }}
+        </h2>
+        <ul class="text-left mb-6">
+          <li v-for="(value, key) in user" :key="key" class="mb-1">
+            <b>{{ key }}:</b> {{ value }}
+          </li>
+        </ul>
+        <button
+          @click="handleSignOut"
+          class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition"
+        >
+          Sign out
+        </button>
+      </div>
+      <div v-else>
+        <h2 class="text-2xl font-semibold mb-6">Please sign in to continue</h2>
+        <button
+          @click="handleSignIn"
+          class="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition"
+        >
+          Sign in with Logto
+        </button>
+      </div>
+    </div>
+  </div>
+</template>

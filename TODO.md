@@ -1,7 +1,7 @@
-# TODO: Implement Login Flow with Logto and Neon DB
+# TODO: Implement Logto Login
 
-## Tasks
-
-- [x] Create server/api/user/save.post.ts to upsert user data after login
-- [x] Edit pages/index.vue to check login status, save user data, and redirect to /chat
-- [ ] Test the login flow
+- [x] Update pages/index.vue with improved error handling, loading state, and validation
+- [x] Create useLogto composable for Logto client management
+- [x] Implement callback handling in pages/callback.vue
+- [ ] Test the login flow by running the development server
+- [ ] Verify redirect to /chat after successful login
