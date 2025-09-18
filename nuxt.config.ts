@@ -9,6 +9,10 @@ export default defineNuxtConfig({
       appId: process.env.LOGTO_APP_ID,
       appSecret: process.env.LOGTO_APP_SECRET,
       cookieEncryptionKey: process.env.LOGTO_COOKIE_ENCRYPTION_KEY,
+      postCallbackRedirectUri: "/",
+      pathnames: {
+        callback: "/auth/callback",
+      },
     },
     public: {
       logto: {
