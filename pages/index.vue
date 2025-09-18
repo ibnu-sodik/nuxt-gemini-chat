@@ -11,3 +11,33 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import { onMounted } from "vue";
+import { useLogtoClient } from "#imports";
+import { navigateTo } from "#app/composables/router";
+
+const logto = useLogtoClient();
+console.log(logto);
+
+onMounted(async () => {
+  if (logto && logto.isAuthenticated) {
+    // Get user info
+    const userInfo = await logto.getIdTokenClaims();
+    // Save user data to DB
+    try {
+      await $fetch("/api/user/save", {
+        method: "POST",
+        body: {
+          email: userInfo.email,
+          logtoId: userInfo.sub,
+        },
+      });
+      // Redirect to /chat
+      await navigateTo("/chat");
+    } catch (error) {
+      console.error("Error saving user:", error);
+    }
+  }
+});
+</script>

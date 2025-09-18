@@ -1,15 +1,7 @@
-# TODO List
+# TODO: Implement Login Flow with Logto and Neon DB
 
-- [x] Install Tailwind CSS
-- [x] Configure Tailwind in nuxt.config.ts
-- [x] Create pages/index.vue with basic UI using Tailwind
-- [x] Update app.vue to use NuxtPage
-- [x] Test the app (run dev server)
-- [x] Create chat interface with sidebar, chat area, new chat button, message input, and differentiated user/AI messages
+## Tasks
 
-## Next Steps
-
-- Implement chat functionality with Gemini API
-- Set up authentication with Logto
-- Configure database with Prisma
-- Add API endpoints for chat sessions
+- [x] Create server/api/user/save.post.ts to upsert user data after login
+- [x] Edit pages/index.vue to check login status, save user data, and redirect to /chat
+- [ ] Test the login flow
