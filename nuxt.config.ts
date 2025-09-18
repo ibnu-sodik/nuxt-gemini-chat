@@ -13,7 +13,7 @@ export default defineNuxtConfig({
       cookieEncryptionKey: process.env.NUXT_LOGTO_COOKIE_ENCRYPTION_KEY,
 
       // Setelah login selesai di /callback, redirect user ke halaman utama
-      postCallbackRedirectUri: "/",
+      postCallbackRedirectUri: "/chat",
 
       pathnames: {
         signIn: "/login",   // otomatis /login → Logto

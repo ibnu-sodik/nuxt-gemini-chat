@@ -7,7 +7,6 @@ const logto = useLogto();
 const router = useRouter();
 
 const handleSignIn = async () => {
-  console.log("Signing in...");
   await logto.signInRedirect();
 };
 
