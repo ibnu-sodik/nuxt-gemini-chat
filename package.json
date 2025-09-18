@@ -10,6 +10,9 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@logto/browser": "^3.0.9",
+    "@logto/js": "^6.1.0",
+    "@logto/nuxt": "^1.2.6",
     "@prisma/client": "^6.16.2",
     "nuxt": "^3.19.2",
     "prisma": "^6.16.2",
