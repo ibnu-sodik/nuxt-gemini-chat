@@ -5,14 +5,15 @@ export default defineNuxtConfig({
   modules: ["@nuxtjs/tailwindcss", "@logto/nuxt"],
   runtimeConfig: {
     logto: {
-      endpoint: process.env.NUXT_LOGTO_ENDPOINT,
-      appId: process.env.NUXT_LOGTO_APP_ID,
-      appSecret: process.env.NUXT_LOGTO_APP_SECRET,
+      endpoint: process.env.LOGTO_ENDPOINT,
+      appId: process.env.LOGTO_APP_ID,
+      appSecret: process.env.LOGTO_APP_SECRET,
+      cookieEncryptionKey: process.env.LOGTO_COOKIE_ENCRYPTION_KEY,
     },
     public: {
       logto: {
-        endpoint: process.env.NUXT_LOGTO_ENDPOINT,
-        appId: process.env.NUXT_LOGTO_APP_ID,
+        endpoint: process.env.LOGTO_ENDPOINT,
+        appId: process.env.LOGTO_APP_ID,
       },
     },
   },
