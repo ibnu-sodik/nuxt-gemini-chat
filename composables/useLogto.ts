@@ -1,5 +1,5 @@
 import LogtoClient from "@logto/browser";
-import { useRuntimeConfig } from "#app";
+// import { useRuntimeConfig } from "#app";
 import { ref } from "vue";
 
 const logtoClient = ref<LogtoClient | null>(null);

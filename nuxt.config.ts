@@ -2,9 +2,13 @@
 import { UserScope } from "@logto/nuxt";
 
 export default defineNuxtConfig({
-  compatibilityDate: "2025-07-15",
-  devtools: { enabled: false },
-  modules: ["@nuxtjs/tailwindcss", "@logto/nuxt"],
+  compatibilityDate: '2025-09-18',
+  css: ['~/assets/css/tailwind.css'],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "@logto/nuxt",
+    // "shadcn-vue/nuxt"
+  ],
   runtimeConfig: {
     logto: {
       endpoint: process.env.NUXT_LOGTO_ENDPOINT, // ex: https://57t30l.logto.app
@@ -16,12 +20,12 @@ export default defineNuxtConfig({
       postCallbackRedirectUri: "/chat",
 
       pathnames: {
-        signIn: "/login",   // otomatis /login → Logto
-        signOut: "/logout", // otomatis /logout → Logto
-        callback: "/callback", // HARUS sama dengan redirect_uri di Logto Console
+        signIn: "/login",
+        signOut: "/logout",
+        callback: "/callback",
       },
 
-      scopes: [UserScope.Email, UserScope.Phone, UserScope.Profile],
+      scopes: ["openid", "profile", "email"],
       fetchUserInfo: true,
     },
     public: {
@@ -29,6 +33,8 @@ export default defineNuxtConfig({
         endpoint: process.env.NUXT_LOGTO_ENDPOINT,
         appId: process.env.NUXT_LOGTO_APP_ID,
       },
+      googleApiKey: process.env.GEMINI_API_KEY,
     },
+    databaseUrl: process.env.DATABASE_URL,
   },
 });

@@ -1,9 +1,11 @@
-import { useLogto } from "./useLogto";
+// import { useLogto } from "#imports";
+import { useLogto } from '~/composables/useLogto'
 import { ref, computed } from "vue";
 
 interface User {
     email?: string;
     id?: string;
+    logtoId?: string;
 }
 
 export function useAuth() {
@@ -15,8 +17,9 @@ export function useAuth() {
         if (isAuth) {
             const claims = await logto.getIdTokenClaims();
             user.value = {
-                email: claims?.email || undefined,
+                email: claims?.email,
                 id: claims?.sub,
+                logtoId: claims?.sub,
             };
         } else {
             user.value = null;

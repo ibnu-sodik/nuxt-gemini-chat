@@ -6,18 +6,16 @@
 
 <script setup lang="ts">
 import { useLogto } from "#imports";
-import { onMounted } from "#imports";
+import { onMounted } from "vue";
 
 const logto = useLogto();
 
 onMounted(async () => {
   try {
-    await logto.handleSignInCallback(window.location.href);
-    // Redirect to chat page after successful callback
+    await logto.handleSignInCallback();
     await navigateTo("/chat");
   } catch (error) {
     console.error("Callback error:", error);
-    // Redirect to home on error
     await navigateTo("/");
   }
 });

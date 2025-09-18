@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -31,14 +30,13 @@ model ChatSession {
 }
 
 model Message {
-  id        String      @id @default(cuid())
-  content   String      @db.Text
-  role      String
-  createdAt DateTime    @default(now())
-  sessionId String
-  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
+  id              String      @id @default(cuid())
+  content         String      @db.Text
+  role            String
+  createdAt       DateTime    @default(now())
+  sessionId       String
+  session         ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   parentMessageId String?
-  parentMessage   Message?  @relation("MessageBranch", fields: [parentMessageId], references: [id])
-  children        Message[] @relation("MessageBranch")
+  parentMessage   Message?    @relation("MessageBranch", fields: [parentMessageId], references: [id])
+  children        Message[]   @relation("MessageBranch")
 }

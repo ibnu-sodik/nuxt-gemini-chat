@@ -1,25 +1,26 @@
-import { defineEventHandler, readBody } from "h3";
-import { useRuntimeConfig } from "#imports";
+// ~/server/api/chat.post.ts
+import { defineEventHandler, readBody, createError } from "h3";
 import { prisma } from "~/server/utils/prisma";
-import { streamText } from "ai";
+import { streamText } from "ai"; // ganti dari vercel-ai
 import { google } from "@ai-sdk/google";
+import { useLogto } from "~/composables/useLogto";
 
 export default defineEventHandler(async (event) => {
-    const body = await readBody(event);
-    const { sessionId, message } = body;
-
-    if (!sessionId || !message) {
-        return {
-            statusCode: 400,
-            statusMessage: "sessionId and message are required",
-        };
+    // 🔐 Auth check pakai Logto
+    const logto = useLogto(event);
+    const isAuth = await logto.isAuthenticated();
+    if (!isAuth) {
+        throw createError({ statusCode: 401, statusMessage: "Unauthorized" });
     }
 
-    // TODO: Add proper authentication check here
-    // For now, assume user is authenticated
+    const claims = await logto.getIdTokenClaims();
 
-    // Save user message to DB
-    const userMessage = await prisma.message.create({
+    // 📩 Ambil body request
+    const body = await readBody<{ sessionId: string; message: string }>(event);
+    const { sessionId, message } = body;
+
+    // 💾 Simpan pesan user ke database
+    await prisma.message.create({
         data: {
             content: message,
             role: "user",
@@ -27,25 +28,20 @@ export default defineEventHandler(async (event) => {
         },
     });
 
-    // Call Gemini LLM via Vercel AI SDK
-    const config = useRuntimeConfig();
-    const result = await streamText({
-        model: google("models/gemini-2.5-pro", {
-            apiKey: config.public.googleApiKey,
-        }),
-        messages: [{ role: "user", content: message }],
-    });
-
-    // Stream response back to client and save AI messages
+    // 🤖 Streaming Gemini
+    const config = useRuntimeConfig(event); // ✅ ambil dari event, bukan #imports
     let aiContent = "";
 
-    return new ReadableStream({
-        async start(controller) {
-            for await (const delta of result.textStream) {
-                aiContent += delta;
-                controller.enqueue(new TextEncoder().encode(delta));
-            }
-            // Save AI message to DB
+    const stream = await streamText({
+        model: google("models/gemini-2.5-pro", {
+            apiKey: config.public.googleApiKey, // pastikan ada di nuxt.config.ts
+        }),
+        messages: [{ role: "user", content: message }],
+        onToken: (token) => {
+            aiContent += token;
+        },
+        onFinish: async () => {
+            // 💾 Simpan jawaban AI
             await prisma.message.create({
                 data: {
                     content: aiContent,
@@ -53,7 +49,8 @@ export default defineEventHandler(async (event) => {
                     sessionId,
                 },
             });
-            controller.close();
         },
     });
+
+    return stream;
 });

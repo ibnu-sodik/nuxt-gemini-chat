@@ -1,6 +1,6 @@
 <template>
   <aside class="sidebar">
-    <button @click="createNewSession" class="new-chat-button">New Chat</button>
+    <Button @click="createNewSession">New Chat</Button>
     <ul class="session-list">
       <li
         v-for="session in sessions"
@@ -15,52 +15,31 @@
 </template>
 
 <script setup lang="ts">
-interface ChatSession {
-  id: string;
-  title: string;
-  createdAt: string;
-}
+import { Button } from "shadcn-vue";
+import { ref, onMounted } from "vue";
+import { useAuth } from "~/composables/useAuth";
 
-const props = defineProps<{
-  activeSessionId?: string;
-}>();
-
+const props = defineProps<{ activeSessionId?: string }>();
 const emit = defineEmits<{
   sessionSelected: [id: string];
   newSessionCreated: [id: string];
 }>();
-
-const sessions = ref<ChatSession[]>([]);
+const sessions = ref([]);
 
 const fetchSessions = async () => {
-  try {
-    const response = await $fetch<{ sessions: ChatSession[] }>("/api/sessions");
-    sessions.value = response.sessions;
-  } catch (error) {
-    console.error("Failed to fetch sessions", error);
-  }
+  // Fetch dari API
+  const { user } = useAuth();
+  const res = await $fetch("/api/sessions");
+  sessions.value = res.sessions;
 };
 
-const selectSession = (id: string) => {
-  emit("sessionSelected", id);
-};
-
+const selectSession = (id: string) => emit("sessionSelected", id);
 const createNewSession = async () => {
-  try {
-    const response = await $fetch<{ session: ChatSession }>("/api/sessions", {
-      method: "POST",
-      body: { title: "New Chat" },
-    });
-    sessions.value.unshift(response.session);
-    emit("newSessionCreated", response.session.id);
-  } catch (error) {
-    console.error("Failed to create new session", error);
-  }
+  const res = await $fetch("/api/sessions", { method: "POST" });
+  emit("newSessionCreated", res.session.id);
 };
 
-onMounted(() => {
-  fetchSessions();
-});
+onMounted(fetchSessions);
 </script>
 
 <style scoped>
